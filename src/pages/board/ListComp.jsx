@@ -11,7 +11,7 @@ function ListComp({ posts }) {
   return (
     <div>
       <h3>리스트</h3>
-      <table class="table">
+      <table className="table">
         <thead>
           <tr>
             <th scope="col" style={{ width: '30px' }}>
