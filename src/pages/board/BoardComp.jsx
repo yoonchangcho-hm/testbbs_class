@@ -1,11 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ListComp from './ListComp';
 import WriteComp from './WriteComp';
 import ViewComp from './ViewComp';
 import ModifyComp from './ModiComp';
 import { Link, Route, Routes } from 'react-router-dom';
+import supabase from '../../utils/supabase';
 
 function BoardComp() {
+  const [posts, setPosts] = useState([]);
+
+  const getPosts = async () => {
+    const { data, error } = await supabase
+      .from('posts')
+      .select()
+      .order('id', { ascending: false });
+    console.log(data);
+    setPosts(data);
+  };
+
+  useEffect(() => {
+    // async function getPosts() {
+    //   const { data: posts } = await supabase.from('posts').select();
+
+    //   console.log(posts);
+    //   setPosts(posts);
+    // }
+
+    getPosts();
+  }, []);
   return (
     <div className="container">
       <div
@@ -24,8 +46,8 @@ function BoardComp() {
         </Link>
       </div>
       <Routes>
-        <Route index element={<ListComp />}></Route>
-        <Route path="list" element={<ListComp />}></Route>
+        <Route index element={<ListComp posts={posts} />}></Route>
+        <Route path="list" element={<ListComp posts={posts} />}></Route>
         <Route path="write" element={<WriteComp />}></Route>
         <Route path="view/:id" element={<ViewComp />}></Route>
         <Route path="modify/:id" element={<ModifyComp />}></Route>

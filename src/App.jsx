@@ -40,7 +40,15 @@ function App() {
         <Route path="/about/*" element={<AboutComp />}></Route>
         <Route path="/board/*" element={<BoardComp />}></Route>
       </Routes>
-      <div className="container">footer</div>
+      <div
+        className="container-flued bg-info py-5 mt-5"
+        style={{ background: '#ddd' }}
+      >
+        <div className="container">
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui,
+          quisquam?
+        </div>
+      </div>
     </BrowserRouter>
   );
 }
