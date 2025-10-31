@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import supabase from '../../utils/supabase';
 import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
+
+dayjs.locale('ko');
 
 function ViewComp() {
   const { id } = useParams();
@@ -29,7 +32,8 @@ function ViewComp() {
         <div className="d-flex flex-column flex-md-row justify-content-between">
           <h4>{view.title}</h4>
           <div>
-            {view.name} / {dayjs(view.created_at).format('YY.MM.DD HH:mm')}
+            {view.name} /{' '}
+            {dayjs(view.created_at).format('YY.MM.DD (ddd) HH:mm')}
           </div>
         </div>
         <hr />
