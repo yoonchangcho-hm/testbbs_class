@@ -50,9 +50,15 @@ function BoardComp() {
         <Route index element={<ListComp posts={posts} />}></Route>
         <Route path="list" element={<ListComp posts={posts} />}></Route>
         <Route path="write" element={<WriteComp getPosts={getPosts} />}></Route>
-        <Route path="view/:id" element={<ViewComp />}></Route>
+        <Route
+          path="view/:id"
+          element={<ViewComp getPosts={getPosts} />}
+        ></Route>
         {/* <Route path="view" element={<ViewComp />}></Route> */}
-        <Route path="modify/:id" element={<ModifyComp />}></Route>
+        <Route
+          path="modify/:id"
+          element={<ModifyComp getPosts={getPosts} />}
+        ></Route>
       </Routes>
     </div>
   );

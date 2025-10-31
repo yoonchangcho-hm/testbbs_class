@@ -19,7 +19,7 @@ function ViewComp() {
       setView(data);
     };
     viewData();
-  }, []);
+  }, [id]); //id가 변경될 때마다 다시 불러오도록 의존성 추가
 
   return (
     <div>
@@ -40,7 +40,9 @@ function ViewComp() {
           <Link to="/board/list" className="btn btn-primary">
             리스트
           </Link>
-          <Link to="/board/modi" className="btn btn-info">
+
+          {/* 수정: id를 포함한 경로로 정확하게 이동 */}
+          <Link to={`/board/modify/${id}`} className="btn btn-info">
             수정
           </Link>
           <Link to="" className="btn btn-danger">
