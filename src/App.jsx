@@ -42,8 +42,8 @@ function App() {
       </Routes>
       <div className="container-fluid py-5 mt-5" style={{ background: '#ddd' }}>
         <div className="container">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui,
-          quisquam?
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit,
+          ratione?
         </div>
       </div>
     </BrowserRouter>

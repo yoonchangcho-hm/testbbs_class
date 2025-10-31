@@ -11,6 +11,7 @@ function ListComp({ posts }) {
   return (
     <div>
       <h3>리스트</h3>
+
       <table className="table">
         <thead>
           <tr>
@@ -41,7 +42,6 @@ function ListComp({ posts }) {
           })}
         </tbody>
       </table>
-
       {/* <ul>
         {posts.map((item, i) => (
           <li key={i}>

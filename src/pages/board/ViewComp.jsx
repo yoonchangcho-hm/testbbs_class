@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 
 function ViewComp() {
   const { id } = useParams();
-  const [view, setView] = useState();
+  const [view, setView] = useState({});
 
   useEffect(() => {
     const viewData = async () => {
@@ -20,6 +20,7 @@ function ViewComp() {
     };
     viewData();
   }, []);
+
   return (
     <div>
       <h3>글보기</h3>
@@ -37,7 +38,7 @@ function ViewComp() {
       <div className="d-flex justify-content-end">
         <div className="d-flex gap-2">
           <Link to="/board/list" className="btn btn-primary">
-            글리스트
+            리스트
           </Link>
           <Link to="/board/modi" className="btn btn-info">
             수정

@@ -1,11 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
+import supabase from '../../utils/supabase';
+import { Link, useNavigate } from 'react-router-dom';
 
-function WriteComp() {
-  const clickHandler = (e) => {
-    e.preventDefault();
-    alert('전송');
+function WriteComp({ getPosts }) {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    title: '',
+    name: '',
+    content: '',
+  });
+
+  // const [name, setTitle] = useState
+  // const [content, setCount] = useState
+
+  // 입력값 변경 시 상태 업데이트
+  const eventHandler = (e) => {
+    // console.log(e.target);
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      return {
+        // ...prev,[e.target.title]:e.target.value
+        ...prev,
+        [name]: value,
+      };
+    });
+    // setFormData(()=>({}))
   };
 
+  const clickHandler = (e) => {
+    e.preventDefault();
+    // alert('전송');
+
+    // validata();
+    const createWrite = async () => {
+      const { data, error } = await supabase
+        .from('posts')
+        .insert([
+          {
+            title: formData.title,
+            name: formData.name,
+            content: formData.content,
+          },
+        ])
+        .select();
+
+      if (!error) {
+        alert('글작성성공');
+        getPosts(); // navigate보다 먼저 호출하는 것이 안전
+        navigate('/board/list');
+      }
+    };
+    createWrite();
+  };
   return (
     <div>
       <h3>글작성</h3>
@@ -22,9 +69,11 @@ function WriteComp() {
               className="form-control"
               placeholder="글제목을 입력하세요"
               required
+              onChange={eventHandler}
             />
           </div>
-          <div>
+          <div>{formData.title}</div>
+          <div className="mb-3">
             <label htmlFor="name" className="form-label">
               이름
             </label>
@@ -35,9 +84,13 @@ function WriteComp() {
               className="form-control"
               placeholder="이름을 입력하세요"
               required
+              // onChange={(e)=>{setName(e.target.value)}}
+
+              onChange={eventHandler}
             />
           </div>
-          <div>
+          <div>{formData.name}</div>
+          <div className="mb-3">
             <label htmlFor="content" className="form-label">
               내용
             </label>
@@ -47,16 +100,21 @@ function WriteComp() {
               name="content"
               className="form-control"
               placeholder="내용을 입력하세요"
-              row="5"
+              rows="5" // 🔧 input에 row 속성 사용은 잘못된 방식 → textarea로 변경
               // style={{ height: '200px' }}
               required
+              // onChange={(e)=>{setCount(e.target.value)}}
+
+              onChange={eventHandler}
             />
           </div>
-          <div className="d-flex justify-content-end">
-            <div className="d-flex gap-2">
-              <button className="btn btn-danger">취소</button>
-              <button className="btn btn-primary">글작성</button>
-            </div>
+          <div>{formData.content}</div>
+
+          <div className="d-flex justify-content-end gap-2">
+            <Link to="/board/list" className="btn btn-danger">
+              취소
+            </Link>
+            <button className="btn btn-primary">글작성</button>
           </div>
         </form>
       </div>

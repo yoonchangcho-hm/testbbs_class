@@ -28,6 +28,7 @@ function BoardComp() {
 
     getPosts();
   }, []);
+
   return (
     <div className="container">
       <div
@@ -48,8 +49,9 @@ function BoardComp() {
       <Routes>
         <Route index element={<ListComp posts={posts} />}></Route>
         <Route path="list" element={<ListComp posts={posts} />}></Route>
-        <Route path="write" element={<WriteComp />}></Route>
+        <Route path="write" element={<WriteComp getPosts={getPosts} />}></Route>
         <Route path="view/:id" element={<ViewComp />}></Route>
+        {/* <Route path="view" element={<ViewComp />}></Route> */}
         <Route path="modify/:id" element={<ModifyComp />}></Route>
       </Routes>
     </div>
