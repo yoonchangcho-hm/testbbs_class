@@ -29,7 +29,7 @@ function ViewComp() {
         <div className="d-flex flex-column flex-md-row justify-content-between">
           <h4>{view.title}</h4>
           <div>
-            {view.name} / {dayjs(view.created_at).format('YY.MM.DD hh:mm')}
+            {view.name} / {dayjs(view.created_at).format('YY.MM.DD HH:mm')}
           </div>
         </div>
         <hr />
