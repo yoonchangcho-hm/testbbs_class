@@ -1,71 +1,65 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import supabase from '../../utils/supabase';
+import React from 'react';
 
 function WriteComp() {
-  const [title, setTitle] = useState('');
-  const [name, setName] = useState('');
-  const [content, setContent] = useState('');
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
+  const clickHandler = (e) => {
     e.preventDefault();
-
-    const { error } = await supabase.from('posts').insert([
-      {
-        title,
-        name,
-        content,
-      },
-    ]);
-
-    if (error) {
-      alert('글 작성 실패.');
-      console.error(error);
-    } else {
-      alert('글 등록 완료.');
-      navigate('/board/list'); // 글 작성 후 리스트로 이동
-    }
+    alert('전송');
   };
 
   return (
-    <div className="container">
-      <h3>글 작성</h3>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">제목</label>
-          <input
-            type="text"
-            className="form-control"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">작성자</label>
-          <input
-            type="text"
-            className="form-control"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">내용</label>
-          <textarea
-            className="form-control"
-            rows="5"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-          ></textarea>
-        </div>
-        <button type="submit" className="btn btn-primary">
-          등록
-        </button>
-      </form>
+    <div>
+      <h3>글작성</h3>
+      <div>
+        <form onSubmit={clickHandler}>
+          <div className="mb-3">
+            <label htmlFor="title" className="form-label">
+              제목
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              className="form-control"
+              placeholder="글제목을 입력하세요"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="name" className="form-label">
+              이름
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              className="form-control"
+              placeholder="이름을 입력하세요"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="content" className="form-label">
+              내용
+            </label>
+            <input
+              type="text"
+              id="content"
+              name="content"
+              className="form-control"
+              placeholder="내용을 입력하세요"
+              row="5"
+              // style={{ height: '200px' }}
+              required
+            />
+          </div>
+          <div className="d-flex justify-content-end">
+            <div className="d-flex gap-2">
+              <button className="btn btn-danger">취소</button>
+              <button className="btn btn-primary">글작성</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
