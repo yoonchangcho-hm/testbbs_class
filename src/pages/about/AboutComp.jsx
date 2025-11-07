@@ -5,7 +5,7 @@ import HistoryComp from './HistoryComp';
 import { useUser } from '../../context/UserContext';
 
 function AboutComp() {
-  const text = useUser();
+  const { text } = useUser(); //{signUp:signUp,text:text}
   return (
     <div className="container">
       <div
