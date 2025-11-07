@@ -14,6 +14,7 @@ export const useUser = () => {
 export const UserProvider = ({ children }) => {
   // const [text, setText] = useState('안녕하세요 ');
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   const signUp = async (email, password, name, phone, text) => {
     const { data, error } = await supabase.auth.signUp({
@@ -50,16 +51,28 @@ export const UserProvider = ({ children }) => {
     });
 
     if (!error) {
+      setUser(data.user);
       return { error: null };
     } else {
       return { error };
     }
   };
 
+  const logout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      setUser(null);
+      return { error: null };
+    }
+    return { error };
+  };
+
   const value = {
     loading, //변수
+    user,
     signUp, //함수
     signIn,
+    logout,
     setLoading,
   };
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

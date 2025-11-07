@@ -9,7 +9,13 @@ import { ToastContainer } from 'react-toastify';
 import { useUser } from './context/UserContext';
 
 function App() {
-  const { signUp, text } = useUser();
+  const { signUp, logout, user } = useUser(); //logout, user 추가
+
+  const handleLogout = async () => {
+    await logout(); //  로그아웃 실행
+    toast('👋 로그아웃 되었습니다.'); //  로그아웃 메시지 추가
+  };
+
   return (
     <BrowserRouter>
       <div className="container d-flex justify-content-between">
@@ -17,7 +23,7 @@ function App() {
           <Link to="/" className="nav-link">
             LOGO
           </Link>
-          <button onClick={signUp}>{text}</button>
+          <button onClick={signUp}>회원가입</button>
         </h1>
         <ul className="d-flex gap-3 menu">
           <li className="d-flex align-items-center">
@@ -43,9 +49,14 @@ function App() {
               member
             </NavLink>
           </li>
-          <li className="d-flex align-items-center">
-            <Link className="nav-link">로그아웃</Link>
-          </li>
+          {user && ( // 로그인 상태일 때만 로그아웃 버튼 표시
+            <li className="d-flex align-items-center">
+              <button onClick={handleLogout} className="nav-link btn btn-link">
+                로그아웃
+              </button>{' '}
+              {/*  Link → button 변경 */}
+            </li>
+          )}
         </ul>
       </div>
       <Routes>
