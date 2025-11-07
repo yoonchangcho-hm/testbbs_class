@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import supabase from '../../utils/supabase';
 import { toast } from 'react-toastify';
+import { useUser } from '../../context/UserContext';
 
 function SignUpComp() {
+  const { loading, setLoading, signUp } = useUser();
+
   const [formData, setFormData] = useState({
     useremail: '',
     userpwd: '',
@@ -14,7 +17,7 @@ function SignUpComp() {
   });
 
   const [errorM, setErrorM] = useState('');
-  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const eventHandler = (e) => {
@@ -60,40 +63,60 @@ function SignUpComp() {
 
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({
-      email: formData.useremail,
-      password: formData.userpwd,
-    });
+    //회원가입
+    const { error } = await signUp(
+      formData.useremail,
+      formData.userpwd,
+      formData.name,
+      formData.phone,
+      formData.text
+    );
 
-    console.log(data);
+    console.log(error);
 
     if (!error) {
-      console.log(data.user.id);
-
-      const { error } = await supabase
-        .from('user_table')
-        .insert([
-          {
-            id: data.user.id,
-            name: formData.name,
-            phone: formData.phone,
-            text: formData.text,
-          },
-        ])
-        .select();
-
-      if (!error) {
-        toast('회원가입완료');
-        setLoading(false);
-        navigate('/');
-      } else {
-        toast('가입안됨');
-        setLoading(false);
-      }
+      toast('회원가입완료');
+      navigate('/member/signin');
+      setLoading(false);
     } else {
-      toast('가입안됨');
+      toast(error);
       setLoading(false);
     }
+
+    //   const { data, error } = await supabase.auth.signUp({
+    //     email: formData.useremail,
+    //     password: formData.userpwd,
+    //   });
+
+    //   console.log(data);
+
+    //   if (!error) {
+    //     console.log(data.user.id);
+
+    //     const { error } = await supabase
+    //       .from('user_table')
+    //       .insert([
+    //         {
+    //           id: data.user.id,
+    //           name: formData.name,
+    //           phone: formData.phone,
+    //           text: formData.text,
+    //         },
+    //       ])
+    //       .select();
+
+    //     if (!error) {
+    //       toast('회원가입완료');
+    //       setLoading(false);
+    //       navigate('/');
+    //     } else {
+    //       toast('가입안됨');
+    //       setLoading(false);
+    //     }
+    //   } else {
+    //     toast('가입안됨');
+    //     setLoading(false);
+    //   }
   };
 
   return (
@@ -163,7 +186,6 @@ function SignUpComp() {
               id="name"
               placeholder="이름을 입력하세요"
               onChange={eventHandler}
-              required
               disabled={loading}
             />
           </div>
@@ -178,7 +200,6 @@ function SignUpComp() {
               id="phone"
               placeholder="핸드폰번호를 입력하세요"
               onChange={eventHandler}
-              required
               disabled={loading}
             />
           </div>
@@ -193,7 +214,6 @@ function SignUpComp() {
               id="text"
               placeholder="자기소개를 입력하세요"
               onChange={eventHandler}
-              required
               disabled={loading}
             />
           </div>

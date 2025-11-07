@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react';
+import supabase from '../utils/supabase';
 
 const UserContext = createContext();
 
@@ -11,14 +12,39 @@ export const useUser = () => {
 };
 
 export const UserProvider = ({ children }) => {
-  const [text, setText] = useState('안녕하세요 ');
+  // const [text, setText] = useState('안녕하세요 ');
+  const [loading, setLoading] = useState(false);
 
-  const signUp = () => {
-    alert('test');
+  const signUp = async (email, password, name, phone, text) => {
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+    });
+
+    if (!error) {
+      const { error: userError } = await supabase
+        .from('user_table')
+        .insert([
+          {
+            id: data.user.id,
+            name: name,
+            phone: phone,
+            text: text,
+          },
+        ])
+        .select();
+      if (!userError) {
+        return { error: null };
+      }
+      return { error: userError };
+    } else {
+      return { error: error };
+    }
   };
   const value = {
-    signUp,
-    text,
+    loading, //변수
+    signUp, //함수
+    setLoading,
   };
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
