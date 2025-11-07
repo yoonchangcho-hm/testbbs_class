@@ -26,13 +26,14 @@ export const UserProvider = ({ children }) => {
         .from('user_table')
         .insert([
           {
-            id: data.user.id,
+            id: data.user.id, //uuid 32난수
             name: name,
             phone: phone,
             text: text,
           },
         ])
         .select();
+
       if (!userError) {
         return { error: null };
       }
@@ -41,9 +42,24 @@ export const UserProvider = ({ children }) => {
       return { error: error };
     }
   };
+
+  const signIn = async (email, password) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (!error) {
+      return { error: null };
+    } else {
+      return { error };
+    }
+  };
+
   const value = {
     loading, //변수
     signUp, //함수
+    signIn,
     setLoading,
   };
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
