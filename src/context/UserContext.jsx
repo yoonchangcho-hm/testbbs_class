@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import supabase from '../utils/supabase';
 
 const UserContext = createContext();
@@ -15,6 +15,18 @@ export const UserProvider = ({ children }) => {
   // const [text, setText] = useState('안녕하세요 ');
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    console.log('sesion 준비');
+    const loadUser = async () => {
+      const { data } = await supabase.auth.getSession();
+
+      console.log(data.session);
+
+      // const session = data
+    };
+    loadUser();
+  }, []);
 
   const signUp = async (email, password, name, phone, text) => {
     const { data, error } = await supabase.auth.signUp({
