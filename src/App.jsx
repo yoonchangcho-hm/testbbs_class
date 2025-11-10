@@ -9,12 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import { useUser } from './context/UserContext';
 
 function App() {
-  const { signUp, logout, user } = useUser(); //logout, user 추가
-
-  const handleLogout = async () => {
-    await logout(); //  로그아웃 실행
-    toast('👋 로그아웃 되었습니다.'); //  로그아웃 메시지 추가
-  };
+  const { signUp, text, user, signOut } = useUser(); //logout, user 추가
 
   return (
     <BrowserRouter>
@@ -44,18 +39,34 @@ function App() {
               board
             </NavLink>
           </li>
-          <li className="d-flex align-items-center">
+          {/* <li className="d-flex align-items-center">
             <NavLink to="/member" className="nav-link">
               member
             </NavLink>
-          </li>
-          {user && ( // 로그인 상태일 때만 로그아웃 버튼 표시
-            <li className="d-flex align-items-center">
-              <button onClick={handleLogout} className="nav-link btn btn-link">
-                로그아웃
-              </button>{' '}
-              {/*  Link → button 변경 */}
-            </li>
+          </li> */}
+          {user && (
+            <>
+              <li className="d-flex align-items-center gap-3">
+                <span>{user?.name} 님 안녕하세요!!!</span>
+                <button
+                  className="btn btn-primary btn-sm"
+                  onClick={async () => {
+                    await signOut();
+                  }}
+                >
+                  로그아웃
+                </button>
+              </li>
+            </>
+          )}
+          {!user && (
+            <>
+              <li className="d-flex align-items-center">
+                <Link className="nav-link" to="/member/signin">
+                  로그인
+                </Link>
+              </li>
+            </>
           )}
         </ul>
       </div>
@@ -71,6 +82,7 @@ function App() {
           ratione?
         </div>
       </div>
+      {JSON.stringify(user)}
       <ToastContainer
         position="bottom-center"
         autoClose={2000}

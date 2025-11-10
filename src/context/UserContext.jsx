@@ -16,17 +16,39 @@ export const UserProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
 
+  const fetchuserInfo = async (userId) => {
+    const { data, error } = await supabase
+      .from('user_table')
+      .select('*')
+      .eq('id', userId)
+      .single();
+
+    if (error) return null;
+    return data;
+  };
+
   useEffect(() => {
     console.log('sesion 준비');
     const loadUser = async () => {
       const { data } = await supabase.auth.getSession();
 
-      console.log(data.session);
+      console.log(data);
 
-      // const session = data
+      const session = data?.session ?? null;
+
+      console.log(session?.user ?? null);
+      console.log(session?.user.id);
+
+      // 데이터를 입력
+      // setUser(session?.user ?? null);
+
+      if (session?.user) {
+        const extra = await fetchuserInfo(session?.user.id);
+        setUser({ ...session.user, ...extra });
+      }
     };
     loadUser();
-  }, []);
+  }, [loading]);
 
   const signUp = async (email, password, name, phone, text) => {
     const { data, error } = await supabase.auth.signUp({
@@ -70,13 +92,8 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
-      setUser(null);
-      return { error: null };
-    }
-    return { error };
+  const signOut = async () => {
+    await supabase.auth.signOut();
   };
 
   const value = {
@@ -84,7 +101,7 @@ export const UserProvider = ({ children }) => {
     user,
     signUp, //함수
     signIn,
-    logout,
+    signOut,
     setLoading,
   };
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
