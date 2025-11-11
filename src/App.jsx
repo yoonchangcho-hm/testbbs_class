@@ -18,7 +18,7 @@ function App() {
           <Link to="/" className="nav-link">
             LOGO
           </Link>
-          <button onClick={signUp}>회원가입</button>
+          {/* <button onClick={signUp}>회원가입</button> */}
         </h1>
         <ul className="d-flex gap-3 menu">
           <li className="d-flex align-items-center">
@@ -52,6 +52,7 @@ function App() {
                   className="btn btn-primary btn-sm"
                   onClick={async () => {
                     await signOut();
+                    navigate('/');
                   }}
                 >
                   로그아웃
