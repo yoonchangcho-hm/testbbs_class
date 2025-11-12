@@ -22,14 +22,17 @@ import supabase from '../../utils/supabase';
 //   );
 // }
 function ImageComp() {
-  const [selectFile, setSlectFile] = useState(null);
+  const [selectFile, setSelectFile] = useState(null);
   const [message, setMessage] = useState('');
+  const [uploadUrl, setUploadUrl] = useState('');
+  const [fileName, setFileName] = useState('+');
 
   const fileChangeHandler = (e) => {
     console.log(e.target.files[0]);
     const file = e.target.files[0];
-    setSlectFile(file ?? null);
+    setSelectFile(file ?? null);
     setMessage('');
+    setFileName(file.name);
   };
 
   const submitHandler = async (e) => {
@@ -55,6 +58,12 @@ function ImageComp() {
       return;
     } else {
       toast('업로드 완료되었습니다.');
+
+      //파일경로전달받음
+      const { data } = supabase.storage.from(bucket).getPublicUrl(filepath);
+      console.log(data.publicUrl);
+      setUploadUrl(data.publicUrl);
+      setFileName('+');
     }
   };
   return (
@@ -62,11 +71,30 @@ function ImageComp() {
       <h3>이미지업로드</h3>
       <div>
         <form onSubmit={submitHandler}>
-          <div>
-            <input type="file" accept="image/*" onChange={fileChangeHandler} />
+          <div style={{ position: 'relative' }}>
+            <label
+              htmlFor="photo"
+              className="d-flex justify-content-center align-items-center bg-info rounded text-white mb-3"
+              style={{ width: '100%', height: '50px' }}
+            >
+              {fileName}
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              id="photo"
+              onChange={fileChangeHandler}
+              style={{
+                position: 'absolute',
+                width: '100%',
+                opacity: 0,
+                top: 0,
+              }}
+            />
           </div>
-          <button>test</button>
+          <button className="btn btn-primary">파일업로드</button>
           <div>{message && <p className="text-danger mt-2">{message}</p>}</div>
+          <div>{uploadUrl && <p className=" mt-2">{uploadUrl}</p>}</div>
         </form>
       </div>
     </div>
