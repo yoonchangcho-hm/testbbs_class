@@ -7,6 +7,8 @@ function ImageModifyComp() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [fileName, setFileName] = useState('');
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   const [message, setMessage] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
@@ -27,6 +29,8 @@ function ImageModifyComp() {
         }
 
         setFileName(image.fileName);
+        setTitle(image.title || '');
+        setContent(image.content || '');
 
         const {
           data: { user },
@@ -56,8 +60,8 @@ function ImageModifyComp() {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    if (!fileName.trim()) {
-      setMessage('파일명을 입력해주세요.');
+    if (!fileName.trim() || !title.trim() || !content.trim()) {
+      setMessage('모든 항목을 입력해주세요.');
       return;
     }
 
@@ -66,7 +70,7 @@ function ImageModifyComp() {
     try {
       const { error } = await supabase
         .from('image_upload')
-        .update({ fileName })
+        .update({ fileName, title, content })
         .eq('id', id);
 
       if (error) {
@@ -84,23 +88,72 @@ function ImageModifyComp() {
     }
   };
 
-  if (loading) return <p>로딩 중...</p>;
-  if (!isOwner) return <p>{message || '권한이 없습니다.'}</p>;
+  if (loading) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <p style={{ fontSize: '1.1rem', color: '#555' }}>로딩 중...</p>
+      </div>
+    );
+  }
+
+  if (!isOwner) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <p style={{ fontSize: '1.1rem', color: '#555' }}>
+          {message || '권한이 없습니다.'}
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h3>이미지 수정</h3>
-      <form onSubmit={handleUpdate}>
+    <div style={{ maxWidth: '480px', margin: '3rem auto', padding: '1rem' }}>
+      <h2 style={{ marginBottom: '2rem', textAlign: 'center' }}>이미지 수정</h2>
+      <form
+        onSubmit={handleUpdate}
+        style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+      >
         <input
           type="text"
           value={fileName}
           onChange={(e) => setFileName(e.target.value)}
-          placeholder="파일명을 수정하세요"
+          placeholder="파일명"
+          style={{ padding: '0.5rem', fontSize: '1rem' }}
         />
-        <button type="submit" disabled={isUpdating}>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="제목"
+          style={{ padding: '0.5rem', fontSize: '1rem' }}
+        />
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="내용"
+          rows="4"
+          style={{ padding: '0.5rem', fontSize: '1rem', resize: 'vertical' }}
+        />
+        <button
+          type="submit"
+          disabled={isUpdating}
+          style={{
+            padding: '0.75rem',
+            fontSize: '1rem',
+            backgroundColor: '#007bff',
+            color: '#fff',
+            border: 'none',
+            cursor: isUpdating ? 'not-allowed' : 'pointer',
+            opacity: isUpdating ? 0.6 : 1,
+          }}
+        >
           {isUpdating ? '수정 중...' : '수정'}
         </button>
-        {message && <p>{message}</p>}
+        {message && (
+          <p style={{ color: 'red', fontSize: '0.95rem', marginTop: '0.5rem' }}>
+            {message}
+          </p>
+        )}
       </form>
     </div>
   );

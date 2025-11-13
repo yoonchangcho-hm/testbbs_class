@@ -92,27 +92,48 @@ function ImageViewComp() {
   if (!imageData) return <p>이미지를 찾을 수 없습니다.</p>;
 
   return (
-    <div>
-      <h3>이미지 상세 보기</h3>
+    <div style={{ maxWidth: '640px', margin: '2rem auto', padding: '1rem' }}>
+      <h3 style={{ marginBottom: '1.5rem' }}>이미지 상세 보기</h3>
+
       <img
         src={imageData.fileurl}
         alt={imageData.fileName}
-        style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain' }}
+        style={{
+          width: '100%',
+          maxHeight: '400px',
+          objectFit: 'contain',
+          marginBottom: '1rem',
+        }}
       />
-      <h5>{imageData.fileName}</h5>
-      <p>
+
+      <h4 style={{ marginBottom: '0.5rem' }}>
+        {imageData.title || imageData.fileName}
+      </h4>
+      <p style={{ color: '#666', marginBottom: '1rem' }}>
         업로드 날짜: {dayjs(imageData.created_at).format('YYYY.MM.DD HH:mm')}
       </p>
 
-      <div style={{ marginTop: '20px' }}>
+      {imageData.content && (
+        <div
+          style={{
+            marginBottom: '2rem',
+            whiteSpace: 'pre-line',
+            lineHeight: '1.6',
+          }}
+        >
+          {imageData.content}
+        </div>
+      )}
+
+      <div style={{ display: 'flex', gap: '10px' }}>
         <button onClick={() => navigate('/board/imageboard/list')}>
           목록으로
-        </button>{' '}
+        </button>
         {isOwner && (
           <>
             <button onClick={() => navigate(`/board/imageboard/modify/${id}`)}>
               수정
-            </button>{' '}
+            </button>
             <button onClick={handleDelete} disabled={isDeleting}>
               {isDeleting ? '삭제 중...' : '삭제'}
             </button>

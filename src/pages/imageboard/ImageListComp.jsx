@@ -23,6 +23,12 @@ function ImageListComp() {
     fetchImages();
   }, []);
 
+  // 내용 요약 함수
+  const truncateContent = (text, maxLength = 30) => {
+    if (!text) return '';
+    return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
+  };
+
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -42,7 +48,7 @@ function ImageListComp() {
                 to={`/board/imageboard/view/${img.id}`}
                 className="text-decoration-none"
               >
-                <div className="card">
+                <div className="card h-100">
                   <img
                     src={img.fileurl}
                     alt={img.fileName}
@@ -50,10 +56,11 @@ function ImageListComp() {
                     style={{ height: '200px', objectFit: 'cover' }}
                   />
                   <div className="card-body">
-                    <h6 className="card-title">{img.fileName}</h6>
-                    <p className="card-text text-muted">
-                      {dayjs(img.created_at).format('YY.MM.DD')}
-                    </p>
+                    <h5 className="card-title">{img.title || img.fileName}</h5>
+                    <p className="card-text">{truncateContent(img.content)}</p>
+                  </div>
+                  <div className="card-footer text-muted small">
+                    {dayjs(img.created_at).format('YY.MM.DD')}
                   </div>
                 </div>
               </Link>

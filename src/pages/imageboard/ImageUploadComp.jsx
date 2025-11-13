@@ -6,7 +6,6 @@ import supabase from '../../utils/supabase';
 function ImageUploadComp() {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
-  const [name, setName] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -40,14 +39,8 @@ function ImageUploadComp() {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (
-      !file ||
-      !fileName.trim() ||
-      !name.trim() ||
-      !title.trim() ||
-      !content.trim()
-    ) {
-      toast.error('모든 필드를 입력해주세요.');
+    if (!file || !fileName.trim() || !title.trim() || !content.trim()) {
+      toast.error('모든 항목을 입력해주세요.');
       return;
     }
 
@@ -81,7 +74,7 @@ function ImageUploadComp() {
           fileName,
           fileurl: publicUrl,
           user_id: user.id,
-          name,
+          name: user.email,
           title,
           content,
         });
@@ -103,38 +96,59 @@ function ImageUploadComp() {
   };
 
   if (!user) {
-    return <p>이미지 업로드는 로그인한 사용자만 가능합니다.</p>;
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <p style={{ fontSize: '1.1rem', color: '#555' }}>
+          이미지 업로드는 로그인한 사용자만 가능합니다.
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div>
-      <h3>이미지 업로드</h3>
-      <form onSubmit={handleUpload}>
+    <div style={{ maxWidth: '480px', margin: '3rem auto', padding: '1rem' }}>
+      <h2 style={{ marginBottom: '2rem', textAlign: 'center' }}>
+        이미지 업로드
+      </h2>
+      <form
+        onSubmit={handleUpload}
+        style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+      >
         <input type="file" onChange={handleFileChange} />
         <input
           type="text"
           value={fileName}
           onChange={(e) => setFileName(e.target.value)}
           placeholder="파일명"
-        />
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="작성자 이름"
+          style={{ padding: '0.5rem', fontSize: '1rem' }}
         />
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="제목"
+          style={{ padding: '0.5rem', fontSize: '1rem' }}
         />
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="내용"
+          rows="4"
+          style={{ padding: '0.5rem', fontSize: '1rem', resize: 'vertical' }}
         />
-        <button type="submit" disabled={uploading}>
+        <button
+          type="submit"
+          disabled={uploading}
+          style={{
+            padding: '0.75rem',
+            fontSize: '1rem',
+            backgroundColor: '#007bff',
+            color: '#fff',
+            border: 'none',
+            cursor: uploading ? 'not-allowed' : 'pointer',
+            opacity: uploading ? 0.6 : 1,
+          }}
+        >
           {uploading ? '업로드 중...' : '업로드'}
         </button>
       </form>
