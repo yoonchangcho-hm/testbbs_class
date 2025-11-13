@@ -130,7 +130,15 @@ function ImageViewComp() {
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: '10px' }}>
+      {/* 버튼 영역: 오른쪽 하단 정렬 */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          gap: '10px',
+          marginTop: '2rem',
+        }}
+      >
         <button onClick={() => navigate('/board/imageboard/list')}>
           목록으로
         </button>
