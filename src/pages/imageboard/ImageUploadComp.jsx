@@ -6,6 +6,9 @@ import supabase from '../../utils/supabase';
 function ImageUploadComp() {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
+  const [name, setName] = useState('');
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   const [uploading, setUploading] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
@@ -37,8 +40,14 @@ function ImageUploadComp() {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    if (!file) {
-      toast.error('파일을 선택해주세요.');
+    if (
+      !file ||
+      !fileName.trim() ||
+      !name.trim() ||
+      !title.trim() ||
+      !content.trim()
+    ) {
+      toast.error('모든 필드를 입력해주세요.');
       return;
     }
 
@@ -72,6 +81,9 @@ function ImageUploadComp() {
           fileName,
           fileurl: publicUrl,
           user_id: user.id,
+          name,
+          title,
+          content,
         });
 
       if (insertError) {
@@ -103,7 +115,24 @@ function ImageUploadComp() {
           type="text"
           value={fileName}
           onChange={(e) => setFileName(e.target.value)}
-          placeholder="파일명을 입력하세요"
+          placeholder="파일명"
+        />
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="작성자 이름"
+        />
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="제목"
+        />
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          placeholder="내용"
         />
         <button type="submit" disabled={uploading}>
           {uploading ? '업로드 중...' : '업로드'}
