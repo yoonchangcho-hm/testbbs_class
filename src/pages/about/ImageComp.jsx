@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import supabase from '../../utils/supabase';
 
@@ -27,12 +27,21 @@ function ImageComp() {
   const [uploadUrl, setUploadUrl] = useState('');
   const [fileName, setFileName] = useState('+');
 
+  //미리보고 state
+  const [preview, setPreview] = useState('');
+
+  //미리보기 삭제리르 위한 ref 꼭 import
+  const fileInputRef = useRef(null);
+
   const fileChangeHandler = (e) => {
     console.log(e.target.files[0]);
     const file = e.target.files[0];
     setSelectFile(file ?? null);
     setMessage('');
     setFileName(file.name);
+
+    //미리보기
+    setPreview(URL.createObjectURL(file));
   };
 
   const submitHandler = async (e) => {
@@ -90,8 +99,31 @@ function ImageComp() {
                 opacity: 0,
                 top: 0,
               }}
+              ref={fileInputRef}
             />
           </div>
+
+          <div className="mb-3 position-reletive bg-info">
+            {preview && (
+              <>
+                {' '}
+                <img
+                  src={preview}
+                  className="shadow"
+                  style={{
+                    width: '100px',
+                    height: '100px',
+                    objectFit: 'cover',
+                    borderRadius: '10px',
+                  }}
+                />
+                <button className="btn btn-primary btn-sm position-absolute right-0">
+                  삭제
+                </button>
+              </>
+            )}
+          </div>
+
           <button className="btn btn-primary">파일업로드</button>
           <div>{message && <p className="text-danger mt-2">{message}</p>}</div>
           <div>{uploadUrl && <p className=" mt-2">{uploadUrl}</p>}</div>
