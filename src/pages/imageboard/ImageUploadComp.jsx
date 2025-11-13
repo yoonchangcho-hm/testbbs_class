@@ -13,20 +13,13 @@ function ImageUploadComp() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const {
-        data: { user },
-        error,
-      } = await supabase.auth.getUser();
-
+    supabase.auth.getUser().then(({ data: { user }, error }) => {
       if (error || !user) {
         setUser(null);
       } else {
         setUser(user);
       }
-    };
-
-    checkAuth();
+    });
   }, []);
 
   const handleFileChange = (e) => {
@@ -53,7 +46,6 @@ function ImageUploadComp() {
 
     try {
       const filePath = `${Date.now()}_${file.name}`;
-
       const { error: uploadError } = await supabase.storage
         .from('images')
         .upload(filePath, file);
@@ -86,7 +78,9 @@ function ImageUploadComp() {
       }
 
       toast.success('업로드 완료!');
-      navigate('/board/imageboard/list');
+      navigate('/board/imageboard/list', { replace: true });
+      // 또는 강제 새로고침
+      // window.location.href = '/board/imageboard/list';
     } catch (err) {
       toast.error('예상치 못한 오류 발생');
       console.error(err);
@@ -114,28 +108,114 @@ function ImageUploadComp() {
         onSubmit={handleUpload}
         style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
       >
-        <input type="file" onChange={handleFileChange} />
-        <input
-          type="text"
-          value={fileName}
-          onChange={(e) => setFileName(e.target.value)}
-          placeholder="파일명"
-          style={{ padding: '0.5rem', fontSize: '1rem' }}
-        />
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="제목"
-          style={{ padding: '0.5rem', fontSize: '1rem' }}
-        />
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="내용"
-          rows="4"
-          style={{ padding: '0.5rem', fontSize: '1rem', resize: 'vertical' }}
-        />
+        <div>
+          <label
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.3rem',
+              display: 'block',
+            }}
+          >
+            이미지 파일
+          </label>
+          <input type="file" onChange={handleFileChange} />
+        </div>
+
+        <div>
+          <label
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.3rem',
+              display: 'block',
+            }}
+          >
+            파일명
+          </label>
+          <input
+            type="text"
+            value={fileName}
+            disabled
+            style={{
+              padding: '0.5rem',
+              fontSize: '1rem',
+              backgroundColor: '#f5f5f5',
+              border: '1px solid #ccc',
+              color: '#555',
+              cursor: 'not-allowed',
+              width: '100%',
+            }}
+          />
+        </div>
+
+        <div>
+          <label
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.3rem',
+              display: 'block',
+            }}
+          >
+            제목
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="제목"
+            style={{ padding: '0.5rem', fontSize: '1rem', width: '100%' }}
+          />
+        </div>
+
+        <div>
+          <label
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.3rem',
+              display: 'block',
+            }}
+          >
+            내용
+          </label>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="내용"
+            rows="4"
+            style={{
+              padding: '0.5rem',
+              fontSize: '1rem',
+              resize: 'vertical',
+              width: '100%',
+            }}
+          />
+        </div>
+
+        <div>
+          <label
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.3rem',
+              display: 'block',
+            }}
+          >
+            작성자
+          </label>
+          <input
+            type="text"
+            value={user.email}
+            disabled
+            style={{
+              padding: '0.5rem',
+              fontSize: '1rem',
+              backgroundColor: '#f5f5f5',
+              border: '1px solid #ccc',
+              color: '#555',
+              cursor: 'not-allowed',
+              width: '100%',
+            }}
+          />
+        </div>
+
         <button
           type="submit"
           disabled={uploading}

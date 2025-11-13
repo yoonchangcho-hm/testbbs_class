@@ -9,6 +9,7 @@ function ImageModifyComp() {
   const [fileName, setFileName] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [author, setAuthor] = useState('');
   const [message, setMessage] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
@@ -31,6 +32,7 @@ function ImageModifyComp() {
         setFileName(image.fileName);
         setTitle(image.title || '');
         setContent(image.content || '');
+        setAuthor(image.name || '');
 
         const {
           data: { user },
@@ -70,7 +72,7 @@ function ImageModifyComp() {
     try {
       const { error } = await supabase
         .from('image_upload')
-        .update({ fileName, title, content })
+        .update({ title, content })
         .eq('id', id);
 
       if (error) {
@@ -113,27 +115,97 @@ function ImageModifyComp() {
         onSubmit={handleUpdate}
         style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
       >
-        <input
-          type="text"
-          value={fileName}
-          onChange={(e) => setFileName(e.target.value)}
-          placeholder="파일명"
-          style={{ padding: '0.5rem', fontSize: '1rem' }}
-        />
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="제목"
-          style={{ padding: '0.5rem', fontSize: '1rem' }}
-        />
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="내용"
-          rows="4"
-          style={{ padding: '0.5rem', fontSize: '1rem', resize: 'vertical' }}
-        />
+        <div>
+          <label
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.3rem',
+              display: 'block',
+            }}
+          >
+            제목
+          </label>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={{ padding: '0.5rem', fontSize: '1rem', width: '100%' }}
+          />
+        </div>
+
+        <div>
+          <label
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.3rem',
+              display: 'block',
+            }}
+          >
+            내용
+          </label>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            rows="4"
+            style={{
+              padding: '0.5rem',
+              fontSize: '1rem',
+              resize: 'vertical',
+              width: '100%',
+            }}
+          />
+        </div>
+
+        <div>
+          <label
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.3rem',
+              display: 'block',
+            }}
+          >
+            파일명
+          </label>
+          <input
+            type="text"
+            value={fileName}
+            disabled
+            style={{
+              padding: '0.5rem',
+              fontSize: '1rem',
+              backgroundColor: '#f5f5f5',
+              border: '1px solid #ccc',
+              color: '#555',
+              cursor: 'not-allowed',
+              width: '100%',
+            }}
+          />
+        </div>
+
+        <div>
+          <label
+            style={{
+              fontWeight: 'bold',
+              marginBottom: '0.3rem',
+              display: 'block',
+            }}
+          >
+            작성자
+          </label>
+          <input
+            type="text"
+            value={author}
+            disabled
+            style={{
+              padding: '0.5rem',
+              fontSize: '1rem',
+              backgroundColor: '#f5f5f5',
+              border: '1px solid #ccc',
+              width: '100%',
+            }}
+          />
+        </div>
+
         <button
           type="submit"
           disabled={isUpdating}
@@ -149,6 +221,7 @@ function ImageModifyComp() {
         >
           {isUpdating ? '수정 중...' : '수정'}
         </button>
+
         {message && (
           <p style={{ color: 'red', fontSize: '0.95rem', marginTop: '0.5rem' }}>
             {message}

@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 
 function ImageListComp() {
   const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -15,15 +16,22 @@ function ImageListComp() {
 
       if (error) {
         console.error('이미지 불러오기 실패:', error.message);
+        setImages([]);
       } else {
-        setImages(data);
+        setImages(data || []);
       }
+      setLoading(false);
     };
 
-    fetchImages();
+    fetchImages(); // 최초 실행
+
+    const interval = setInterval(() => {
+      fetchImages(); // 3초마다 자동 새로고침
+    }, 3000);
+
+    return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 제거
   }, []);
 
-  // 내용 요약 함수
   const truncateContent = (text, maxLength = 30) => {
     if (!text) return '';
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
@@ -38,23 +46,37 @@ function ImageListComp() {
         </Link>
       </div>
 
-      {images.length === 0 ? (
+      {loading ? (
+        <p>로딩 중...</p>
+      ) : images.length === 0 ? (
         <p>등록된 이미지가 없습니다.</p>
       ) : (
         <div className="row">
           {images.map((img, i) => (
-            <div className="col-md-4 mb-4" key={i}>
+            <div className="col-lg-4 col-md-6 col-sm-12 mb-4" key={i}>
               <Link
                 to={`/board/imageboard/view/${img.id}`}
                 className="text-decoration-none"
               >
-                <div className="card h-100">
-                  <img
-                    src={img.fileurl}
-                    alt={img.fileName}
-                    className="card-img-top"
-                    style={{ height: '200px', objectFit: 'cover' }}
-                  />
+                <div className="card">
+                  <div
+                    style={{
+                      width: '100%',
+                      aspectRatio: '4 / 3',
+                      overflow: 'hidden',
+                      backgroundColor: '#f8f9fa',
+                    }}
+                  >
+                    <img
+                      src={img.fileurl}
+                      alt={img.fileName}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'contain',
+                      }}
+                    />
+                  </div>
                   <div className="card-body">
                     <h5 className="card-title">{img.title || img.fileName}</h5>
                     <p className="card-text">{truncateContent(img.content)}</p>
