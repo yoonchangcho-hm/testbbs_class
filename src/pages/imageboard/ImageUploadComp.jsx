@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import supabase from '../../utils/supabase';
 
@@ -10,7 +9,6 @@ function ImageUploadComp() {
   const [content, setContent] = useState('');
   const [uploading, setUploading] = useState(false);
   const [user, setUser] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user }, error }) => {
@@ -78,9 +76,7 @@ function ImageUploadComp() {
       }
 
       toast.success('업로드 완료!');
-      navigate('/board/imageboard/list', { replace: true });
-      // 또는 강제 새로고침
-      // window.location.href = '/board/imageboard/list';
+      window.location.href = '/board/imageboard/list'; // 강제 새로고침
     } catch (err) {
       toast.error('예상치 못한 오류 발생');
       console.error(err);
@@ -108,6 +104,7 @@ function ImageUploadComp() {
         onSubmit={handleUpload}
         style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
       >
+        {/* 이미지 파일 선택 */}
         <div>
           <label
             style={{
@@ -121,6 +118,7 @@ function ImageUploadComp() {
           <input type="file" onChange={handleFileChange} />
         </div>
 
+        {/* 파일명 표시 */}
         <div>
           <label
             style={{
@@ -147,6 +145,7 @@ function ImageUploadComp() {
           />
         </div>
 
+        {/* 제목 입력 */}
         <div>
           <label
             style={{
@@ -166,6 +165,7 @@ function ImageUploadComp() {
           />
         </div>
 
+        {/* 내용 입력 */}
         <div>
           <label
             style={{
@@ -190,6 +190,7 @@ function ImageUploadComp() {
           />
         </div>
 
+        {/* 작성자 표시 */}
         <div>
           <label
             style={{
@@ -216,6 +217,7 @@ function ImageUploadComp() {
           />
         </div>
 
+        {/* 업로드 버튼 */}
         <button
           type="submit"
           disabled={uploading}

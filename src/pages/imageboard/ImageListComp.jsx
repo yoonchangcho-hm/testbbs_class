@@ -8,28 +8,37 @@ function ImageListComp() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchImages = async () => {
       const { data, error } = await supabase
         .from('image_upload')
         .select('*')
         .order('created_at', { ascending: false });
 
+      if (!isMounted) return;
+
       if (error) {
         console.error('이미지 불러오기 실패:', error.message);
         setImages([]);
       } else {
-        setImages(data || []);
+        setImages((prev) => {
+          const prevStr = JSON.stringify(prev);
+          const nextStr = JSON.stringify(data || []);
+          return prevStr !== nextStr ? data : prev;
+        });
       }
+
       setLoading(false);
     };
 
     fetchImages(); // 최초 실행
 
-    const interval = setInterval(() => {
-      fetchImages(); // 3초마다 자동 새로고침
-    }, 3000);
-
-    return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 제거
+    const interval = setInterval(fetchImages, 3000); // 3초마다 자동 새로고침
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   const truncateContent = (text, maxLength = 30) => {
@@ -53,7 +62,7 @@ function ImageListComp() {
       ) : (
         <div className="row">
           {images.map((img, i) => (
-            <div className="col-lg-4 col-md-6 col-sm-12 mb-4" key={i}>
+            <div className="col-lg-4 col-md-6 col-sm-12 mb-4" key={img.id || i}>
               <Link
                 to={`/board/imageboard/view/${img.id}`}
                 className="text-decoration-none"
