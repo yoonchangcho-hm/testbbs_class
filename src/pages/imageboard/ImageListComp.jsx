@@ -22,11 +22,7 @@ function ImageListComp() {
         console.error('이미지 불러오기 실패:', error.message);
         setImages([]);
       } else {
-        setImages((prev) => {
-          const prevStr = JSON.stringify(prev);
-          const nextStr = JSON.stringify(data || []);
-          return prevStr !== nextStr ? data : prev;
-        });
+        setImages(data || []); // 항상 상태 업데이트
       }
 
       setLoading(false);
