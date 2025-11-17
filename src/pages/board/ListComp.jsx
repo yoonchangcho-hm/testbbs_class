@@ -71,6 +71,7 @@ function ListComp() {
           </Link>
         </div>
       </div>
+      <div>{JSON.stringify(posts)}</div>
     </div>
   );
 }
