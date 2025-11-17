@@ -17,9 +17,9 @@ function ListComp() {
     getPostsWithPagenation(page, size);
   }, [page]);
 
-  // if (!posts.length) {
-  //   return <p>게시물이 없습니다.</p>;
-  // }
+  if (!posts.length) {
+    return <p>게시물이 없습니다.</p>;
+  }
 
   return (
     <div>

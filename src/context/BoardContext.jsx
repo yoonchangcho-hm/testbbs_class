@@ -45,7 +45,7 @@ export const BoardProvider = ({ children }) => {
     }
 
     // 페이지네이션 데이터조회
-    const { data, error } = supabase
+    const { data, error } = await supabase
       .from('posts')
       .select('*')
       .order('id', { ascending: false })
