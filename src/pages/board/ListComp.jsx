@@ -6,10 +6,21 @@ import { Link } from 'react-router-dom';
 import { useBoard } from '../../context/BoardContext';
 
 function ListComp() {
-  const { posts } = useBoard();
-  if (!posts.length) {
-    return <p>게시물이 없습니다.</p>;
-  }
+  const { posts, totalCount, getPostsWithPagenation } = useBoard();
+
+  console.log('전체자료' + totalCount);
+
+  const [page, setPage] = useState(1);
+  const size = 10;
+
+  useEffect(() => {
+    getPostsWithPagenation(page, size);
+  }, [page]);
+
+  // if (!posts.length) {
+  //   return <p>게시물이 없습니다.</p>;
+  // }
+
   return (
     <div>
       <h3>리스트</h3>
