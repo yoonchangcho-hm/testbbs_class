@@ -121,7 +121,7 @@ function ListComp() {
                 className="page-link"
                 onClick={() => {
                   // setPage(page+1)
-                  setPage((prev) => Math.min(page + 1, totalPage));
+                  setPage((prev) => Math.min(prev + 1, totalPage));
                 }}
               >
                 다음
